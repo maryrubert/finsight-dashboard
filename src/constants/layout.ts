@@ -1,0 +1,6 @@
+export const LAYOUT = {
+  SIDEBAR_WIDTH: 220,
+  HEADER_HEIGHT: 64,
+  CONTENT_PADDING: 16,
+  CARD_RADIUS: 12,
+} as const;
