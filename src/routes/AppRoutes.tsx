@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import DashboardPage from '@/pages/Dashboard/DashboardPage';
 import LoginPage from '@/pages/Login/LoginPage';
+import ClientsPage from '@/pages/Clients/ClientsPage';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -18,12 +19,15 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: '/dashboard',
         element: <AppLayout />,
         children: [
           {
-            index: true,
+            path: '/dashboard',
             element: <DashboardPage />,
+          },
+          {
+            path: '/clients',
+            element: <ClientsPage />,
           },
         ],
       },

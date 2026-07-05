@@ -9,27 +9,27 @@ import {
 export const navigationItems = [
   {
     label: 'Dashboard',
-    path: '/',
+    path: '/dashboard',
     icon: LayoutDashboard,
   },
   {
     label: 'Clientes',
-    path: '/clientes',
+    path: '/clients',
     icon: Users,
   },
   {
     label: 'Carteiras',
-    path: '/carteiras',
+    path: '/portfolio',
     icon: BriefcaseBusiness,
   },
   {
     label: 'Relatórios',
-    path: '/relatorios',
+    path: '/reports',
     icon: BarChart3,
   },
   {
     label: 'Configurações',
-    path: '/configuracoes',
+    path: '/settings',
     icon: Settings,
   },
 ] as const;
