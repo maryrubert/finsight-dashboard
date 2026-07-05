@@ -1,24 +1,34 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, Lock, Mail } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
+import {
+  loginSchema,
+  type LoginFormData,
+} from '@/schemas/login.schema';
 
 export function LoginForm() {
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
-    const isValidLogin = signIn(email, password);
+  function onSubmit(data: LoginFormData) {
+    const authenticated = signIn(data.email, data.password);
 
-    if (!isValidLogin) {
+    if (!authenticated) {
       setErrorMessage('Invalid email or password.');
       return;
     }
@@ -44,9 +54,16 @@ export function LoginForm() {
           </p>
         </div>
 
-        <form className="space-y-5" onSubmit={handleSubmit} autoComplete="off">
+        <form
+          className="space-y-5"
+          onSubmit={handleSubmit(onSubmit)}
+          autoComplete="off"
+        >
           <div>
-            <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="email"
+              className="mb-2 block text-sm font-medium text-slate-700"
+            >
               Email
             </label>
 
@@ -55,20 +72,26 @@ export function LoginForm() {
 
               <input
                 id="email"
-                name="finsight-email"
-                type="text"
-                inputMode="email"
+                type="email"
                 autoComplete="off"
                 placeholder=""
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
+                {...register('email')}
+                className="w-full bg-transparent text-sm outline-none"
               />
             </div>
+
+            {errors.email && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <label htmlFor="password" className="mb-2 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="password"
+              className="mb-2 block text-sm font-medium text-slate-700"
+            >
               Password
             </label>
 
@@ -77,17 +100,21 @@ export function LoginForm() {
 
               <input
                 id="password"
-                name="finsight-password"
                 type="password"
                 autoComplete="new-password"
                 placeholder=""
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
+                {...register('password')}
+                className="w-full bg-transparent text-sm outline-none"
               />
 
               <Eye size={18} className="text-slate-400" />
             </div>
+
+            {errors.password && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           {errorMessage && (
@@ -98,16 +125,25 @@ export function LoginForm() {
 
           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center gap-2 text-slate-600">
-              <input type="checkbox" className="h-4 w-4 rounded border-slate-300" />
+              <input
+                type="checkbox"
+                className="h-4 w-4 rounded border-slate-300"
+              />
               Remember me
             </label>
 
-            <button type="button" className="font-medium text-blue-600">
+            <button
+              type="button"
+              className="font-medium text-blue-600"
+            >
               Forgot password?
             </button>
           </div>
 
-          <Button type="submit" className="h-12 w-full rounded-2xl text-sm">
+          <Button
+            type="submit"
+            className="h-12 w-full rounded-2xl text-sm"
+          >
             Sign in
           </Button>
         </form>
