@@ -7,10 +7,7 @@ function initializeStorage() {
   const storedClients = localStorage.getItem(STORAGE_KEY);
 
   if (!storedClients) {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(clientsMock),
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(clientsMock));
   }
 }
 
@@ -28,9 +25,7 @@ export async function getClients(): Promise<Client[]> {
   });
 }
 
-export async function createClient(
-  client: Client,
-): Promise<void> {
+export async function createClient(client: Client): Promise<void> {
   initializeStorage();
 
   const clients = JSON.parse(
@@ -39,8 +34,19 @@ export async function createClient(
 
   clients.unshift(client);
 
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(clients),
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
+}
+
+export async function updateClient(client: Client): Promise<void> {
+  initializeStorage();
+
+  const clients = JSON.parse(
+    localStorage.getItem(STORAGE_KEY) ?? '[]',
+  ) as Client[];
+
+  const updatedClients = clients.map((currentClient) =>
+    currentClient.id === client.id ? client : currentClient,
   );
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedClients));
 }

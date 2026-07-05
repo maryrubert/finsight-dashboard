@@ -1,20 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import type { ClientStatus } from '../types/client';
+import type { Client, ClientStatus } from '../types/client';
+
+interface ClientFormData {
+  name: string;
+  email: string;
+  portfolio: string;
+  status: ClientStatus;
+}
 
 interface ClientModalProps {
   isOpen: boolean;
+  client?: Client | null;
   onClose: () => void;
-  onSave: (client: {
-    name: string;
-    email: string;
-    portfolio: string;
-    status: ClientStatus;
-  }) => void;
+  onSave: (client: ClientFormData) => void;
 }
 
 export function ClientModal({
   isOpen,
+  client,
   onClose,
   onSave,
 }: ClientModalProps) {
@@ -22,6 +26,27 @@ export function ClientModal({
   const [email, setEmail] = useState('');
   const [portfolio, setPortfolio] = useState('');
   const [status, setStatus] = useState<ClientStatus>('active');
+
+  const isEditing = Boolean(client);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    if (client) {
+      setName(client.name);
+      setEmail(client.email);
+      setPortfolio(client.portfolio);
+      setStatus(client.status);
+      return;
+    }
+
+    setName('');
+    setEmail('');
+    setPortfolio('');
+    setStatus('active');
+  }, [client, isOpen]);
 
   function handleSave() {
     if (!name.trim() || !email.trim() || !portfolio.trim()) {
@@ -35,11 +60,6 @@ export function ClientModal({
       status,
     });
 
-    setName('');
-    setEmail('');
-    setPortfolio('');
-    setStatus('active');
-
     onClose();
   }
 
@@ -51,60 +71,54 @@ export function ClientModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
         <h2 className="text-2xl font-bold">
-          Novo Cliente
+          {isEditing ? 'Editar Cliente' : 'Novo Cliente'}
         </h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          Preencha as informações do cliente.
+          {isEditing
+            ? 'Atualize as informações do cliente.'
+            : 'Preencha as informações do cliente.'}
         </p>
 
         <div className="mt-6 space-y-4">
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Nome
-            </label>
+            <label className="mb-2 block text-sm font-medium">Nome</label>
 
             <input
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(event) => setName(event.target.value)}
               className="h-11 w-full rounded-xl border px-4 outline-none focus:border-primary"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Email
-            </label>
+            <label className="mb-2 block text-sm font-medium">Email</label>
 
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(event) => setEmail(event.target.value)}
               className="h-11 w-full rounded-xl border px-4 outline-none focus:border-primary"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Carteira
-            </label>
+            <label className="mb-2 block text-sm font-medium">Carteira</label>
 
             <input
               value={portfolio}
-              onChange={(e) => setPortfolio(e.target.value)}
+              onChange={(event) => setPortfolio(event.target.value)}
               className="h-11 w-full rounded-xl border px-4 outline-none focus:border-primary"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Status
-            </label>
+            <label className="mb-2 block text-sm font-medium">Status</label>
 
             <select
               value={status}
-              onChange={(e) =>
-                setStatus(e.target.value as ClientStatus)
+              onChange={(event) =>
+                setStatus(event.target.value as ClientStatus)
               }
               className="h-11 w-full rounded-xl border px-4 outline-none focus:border-primary"
             >
@@ -128,7 +142,7 @@ export function ClientModal({
             onClick={handleSave}
             className="rounded-xl bg-primary px-5 py-2 text-primary-foreground"
           >
-            Salvar
+            {isEditing ? 'Salvar alterações' : 'Salvar'}
           </button>
         </div>
       </div>
