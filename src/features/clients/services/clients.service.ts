@@ -50,3 +50,22 @@ export async function updateClient(client: Client): Promise<void> {
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedClients));
 }
+
+export async function deleteClient(
+  clientId: string,
+): Promise<void> {
+  initializeStorage();
+
+  const clients = JSON.parse(
+    localStorage.getItem(STORAGE_KEY) ?? '[]',
+  ) as Client[];
+
+  const updatedClients = clients.filter(
+    (client) => client.id !== clientId,
+  );
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(updatedClients),
+  );
+}

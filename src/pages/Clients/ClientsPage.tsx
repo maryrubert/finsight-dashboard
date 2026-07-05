@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { ConfirmationDialog } from '@/components/common/ConfirmationDialog';
 import { ClientModal } from '@/features/clients/components/ClientModal';
 import { ClientsTable } from '@/features/clients/components/ClientsTable';
 import { ClientsToolbar } from '@/features/clients/components/ClientsToolbar';
 import {
   createClient,
+  deleteClient,
   getClients,
   updateClient,
 } from '@/features/clients/services/clients.service';
@@ -14,8 +16,12 @@ export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState<Client | null>(null);
 
   useEffect(() => {
     async function loadClients() {
@@ -52,24 +58,24 @@ export default function ClientsPage() {
     status: ClientStatus;
   }) {
     if (selectedClient) {
-  const updatedClient: Client = {
-    ...selectedClient,
-    ...client,
-  };
+      const updatedClient: Client = {
+        ...selectedClient,
+        ...client,
+      };
 
-  await updateClient(updatedClient);
+      await updateClient(updatedClient);
 
-  setClients((previousClients) =>
-    previousClients.map((currentClient) =>
-      currentClient.id === updatedClient.id
-        ? updatedClient
-        : currentClient,
-    ),
-  );
+      setClients((previousClients) =>
+        previousClients.map((currentClient) =>
+          currentClient.id === updatedClient.id
+            ? updatedClient
+            : currentClient,
+        ),
+      );
 
-  setSelectedClient(null);
-  return;
-}
+      setSelectedClient(null);
+      return;
+    }
 
     const newClient: Client = {
       id: crypto.randomUUID(),
@@ -84,6 +90,23 @@ export default function ClientsPage() {
     ]);
   }
 
+  async function handleConfirmDelete() {
+    if (!clientToDelete) {
+      return;
+    }
+
+    await deleteClient(clientToDelete.id);
+
+    setClients((previousClients) =>
+      previousClients.filter(
+        (client) => client.id !== clientToDelete.id,
+      ),
+    );
+
+    setClientToDelete(null);
+    setIsDeleteDialogOpen(false);
+  }
+
   function handleOpenCreateModal() {
     setSelectedClient(null);
     setIsModalOpen(true);
@@ -92,6 +115,11 @@ export default function ClientsPage() {
   function handleOpenEditModal(client: Client) {
     setSelectedClient(client);
     setIsModalOpen(true);
+  }
+
+  function handleOpenDeleteDialog(client: Client) {
+    setClientToDelete(client);
+    setIsDeleteDialogOpen(true);
   }
 
   function handleCloseModal() {
@@ -126,6 +154,7 @@ export default function ClientsPage() {
           <ClientsTable
             clients={filteredClients}
             onEditClient={handleOpenEditModal}
+            onDeleteClient={handleOpenDeleteDialog}
           />
         )}
       </section>
@@ -135,6 +164,19 @@ export default function ClientsPage() {
         client={selectedClient}
         onClose={handleCloseModal}
         onSave={handleSaveClient}
+      />
+
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        title="Excluir Cliente"
+        message={`Tem certeza que deseja excluir ${clientToDelete?.name}? Esta ação não poderá ser desfeita.`}
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setClientToDelete(null);
+          setIsDeleteDialogOpen(false);
+        }}
       />
     </>
   );
