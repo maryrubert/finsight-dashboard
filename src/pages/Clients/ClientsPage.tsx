@@ -3,7 +3,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { ClientModal } from '@/features/clients/components/ClientModal';
 import { ClientsTable } from '@/features/clients/components/ClientsTable';
 import { ClientsToolbar } from '@/features/clients/components/ClientsToolbar';
-import { getClients } from '@/features/clients/services/clients.service';
+import {
+  createClient,
+  getClients,
+} from '@/features/clients/services/clients.service';
 import type { Client, ClientStatus } from '@/features/clients/types/client';
 
 export default function ClientsPage() {
@@ -40,7 +43,7 @@ export default function ClientsPage() {
     );
   }, [clients, search]);
 
-  function handleCreateClient(client: {
+  async function handleCreateClient(client: {
     name: string;
     email: string;
     portfolio: string;
@@ -50,6 +53,8 @@ export default function ClientsPage() {
       id: crypto.randomUUID(),
       ...client,
     };
+
+    await createClient(newClient);
 
     setClients((previousClients) => [
       newClient,
