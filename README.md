@@ -1,75 +1,175 @@
-# React + TypeScript + Vite
+# 📊 FinSight Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> A modern financial management dashboard built with React, TypeScript and Vite, designed as a portfolio project that simulates a real-world application used by financial consultants.
 
-Currently, two official plugins are available:
+> 🚧 **Project Status:** In Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+FinSight Dashboard is a front-end application focused on applying modern software engineering practices while building a realistic financial management platform.
 
-## Expanding the ESLint configuration
+The project emphasizes:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Clean Architecture
+- Feature-based organization
+- Reusable components
+- Custom React Hooks
+- TypeScript best practices
+- Responsive UI
+- Scalable codebase
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Rather than being just a UI showcase, FinSight aims to simulate how a production-ready application evolves through iterative development.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 Current Features
+
+### Authentication
+
+- Login
+- Logout
+- Protected Routes
+- Persistent Session
+- Form validation with React Hook Form + Zod
+
+### Dashboard
+
+- Responsive layout
+- Sidebar
+- Header
+- KPI cards
+- Financial charts
+
+### Clients
+
+- Client listing
+- Search
+- Create
+- Update
+- Delete
+- Local persistence
+- Reusable Modal
+- Confirmation Dialog
+
+---
+
+## 🛠 Tech Stack
+
+- React
+- TypeScript
+- Vite
+- React Router
+- Tailwind CSS
+- React Hook Form
+- Zod
+- Lucide React
+
+---
+
+## 🏗 Architecture
+
+The project follows a Feature-Based Architecture.
 
 ```
+src
+├── components
+├── contexts
+├── features
+│   ├── auth
+│   ├── clients
+│   └── ...
+├── pages
+├── routes
+└── styles
+```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Each feature is responsible for its own:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Components
+- Hooks
+- Services
+- Types
+- Mock data
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Business logic is extracted into custom hooks, while pages remain focused on rendering the interface.
+
+---
+
+## 🚀 Running Locally
+
+Clone the repository:
+
+```bash
+git clone https://github.com/maryrubert/finsight-dashboard.git
+```
+
+Enter the project:
+
+```bash
+cd finsight-dashboard
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+---
+
+## 🔐 Demo Credentials
+
+Use the following credentials to access the application:
+
+**Email**
 
 ```
+admin@finsight.com
+```
+
+**Password**
+
+```
+123456
+```
+
+---
+
+## 🗺 Roadmap
+
+### ✅ Completed
+
+- Authentication
+- Dashboard Layout
+- Client CRUD
+- Search
+- Local Storage Persistence
+- Business Logic Refactoring
+
+### 🚧 In Progress
+
+- Portfolio Management
+- Reports
+- Settings
+- API Integration
+- Charts with Real Data
+
+---
+
+## 👩‍💻 Author
+
+Developed by **Mariana Grecco**
+
+LinkedIn *(coming soon)*
+
+GitHub:
+
+https://github.com/maryrubert
