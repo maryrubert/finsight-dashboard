@@ -1,93 +1,44 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { ConfirmationDialog } from '@/components/common/ConfirmationDialog';
 import { ClientModal } from '@/features/clients/components/ClientModal';
 import { ClientsTable } from '@/features/clients/components/ClientsTable';
 import { ClientsToolbar } from '@/features/clients/components/ClientsToolbar';
-import {
-  createClient,
-  deleteClient,
-  getClients,
-  updateClient,
-} from '@/features/clients/services/clients.service';
-import type { Client, ClientStatus } from '@/features/clients/types/client';
+
+import { useClients } from '@/features/clients/hooks/useClients';
+import type { ClientFormData } from '@/features/clients/hooks/useClients';
 
 export default function ClientsPage() {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [search, setSearch] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    clients,
+    search,
+    setSearch,
+    isLoading,
+    create,
+    update,
+    remove,
+  } = useClients();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [selectedClient, setSelectedClient] =
+    useState<Client | null>(null);
 
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [clientToDelete, setClientToDelete] = useState<Client | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
+    useState(false);
 
-  useEffect(() => {
-    async function loadClients() {
-      try {
-        const data = await getClients();
-        setClients(data);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  const [clientToDelete, setClientToDelete] =
+    useState<Client | null>(null);
 
-    loadClients();
-  }, []);
-
-  const filteredClients = useMemo(() => {
-    const searchTerm = search.toLowerCase().trim();
-
-    if (!searchTerm) {
-      return clients;
-    }
-
-    return clients.filter(
-      (client) =>
-        client.name.toLowerCase().includes(searchTerm) ||
-        client.email.toLowerCase().includes(searchTerm) ||
-        client.portfolio.toLowerCase().includes(searchTerm),
-    );
-  }, [clients, search]);
-
-  async function handleSaveClient(client: {
-    name: string;
-    email: string;
-    portfolio: string;
-    status: ClientStatus;
-  }) {
+  async function handleSaveClient(
+    data: ClientFormData,
+  ) {
     if (selectedClient) {
-      const updatedClient: Client = {
-        ...selectedClient,
-        ...client,
-      };
-
-      await updateClient(updatedClient);
-
-      setClients((previousClients) =>
-        previousClients.map((currentClient) =>
-          currentClient.id === updatedClient.id
-            ? updatedClient
-            : currentClient,
-        ),
-      );
-
-      setSelectedClient(null);
-      return;
+      await update(selectedClient.id, data);
+    } else {
+      await create(data);
     }
 
-    const newClient: Client = {
-      id: crypto.randomUUID(),
-      ...client,
-    };
-
-    await createClient(newClient);
-
-    setClients((previousClients) => [
-      newClient,
-      ...previousClients,
-    ]);
+    handleCloseModal();
   }
 
   async function handleConfirmDelete() {
@@ -95,13 +46,7 @@ export default function ClientsPage() {
       return;
     }
 
-    await deleteClient(clientToDelete.id);
-
-    setClients((previousClients) =>
-      previousClients.filter(
-        (client) => client.id !== clientToDelete.id,
-      ),
-    );
+    await remove(clientToDelete.id);
 
     setClientToDelete(null);
     setIsDeleteDialogOpen(false);
@@ -136,7 +81,8 @@ export default function ClientsPage() {
           </h1>
 
           <p className="mt-2 text-muted-foreground">
-            Gerencie os clientes cadastrados na plataforma FinSight.
+            Gerencie os clientes cadastrados na plataforma
+            FinSight.
           </p>
         </div>
 
@@ -152,7 +98,7 @@ export default function ClientsPage() {
           </div>
         ) : (
           <ClientsTable
-            clients={filteredClients}
+            clients={clients}
             onEditClient={handleOpenEditModal}
             onDeleteClient={handleOpenDeleteDialog}
           />
