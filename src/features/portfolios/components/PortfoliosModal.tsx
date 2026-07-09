@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import type { Client } from '@/features/clients/types/client';
 
 import type {
@@ -57,8 +58,8 @@ export function PortfoliosModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 px-4 py-8">
+      <div className="mx-auto w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
         <h2 className="text-2xl font-bold">Nova Carteira</h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
@@ -79,34 +80,25 @@ export function PortfoliosModal({
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Cliente
-            </label>
+            <label className="mb-2 block text-sm font-medium">Cliente</label>
 
             <select
-  value={clientId}
-  onChange={(event) => setClientId(event.target.value)}
-  className="h-11 w-full rounded-xl border px-4 outline-none focus:border-primary"
->
-  <option value="">
-    Selecione um cliente
-  </option>
+              value={clientId}
+              onChange={(event) => setClientId(event.target.value)}
+              className="h-11 w-full rounded-xl border px-4 outline-none focus:border-primary"
+            >
+              <option value="">Selecione um cliente</option>
 
-  {clients.map((client) => (
-    <option
-      key={client.id}
-      value={client.id}
-    >
-      {client.name}
-    </option>
-  ))}
-</select>
+              {clients.map((client) => (
+                <option key={client.id} value={client.id}>
+                  {client.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Saldo
-            </label>
+            <label className="mb-2 block text-sm font-medium">Saldo</label>
 
             <input
               type="number"
@@ -132,9 +124,7 @@ export function PortfoliosModal({
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Risco
-            </label>
+            <label className="mb-2 block text-sm font-medium">Risco</label>
 
             <select
               value={risk}
@@ -150,9 +140,7 @@ export function PortfoliosModal({
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Status
-            </label>
+            <label className="mb-2 block text-sm font-medium">Status</label>
 
             <select
               value={status}
