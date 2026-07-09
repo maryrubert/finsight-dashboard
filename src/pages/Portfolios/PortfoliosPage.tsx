@@ -132,6 +132,7 @@ export default function PortfoliosPage() {
 
       <PortfoliosModal
         isOpen={isModalOpen}
+        portfolio={selectedPortfolio}
         clients={clients}
         onClose={handleCloseModal}
         onSave={handleSavePortfolio}

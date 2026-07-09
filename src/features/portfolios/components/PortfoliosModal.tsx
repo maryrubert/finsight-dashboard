@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { Client } from '@/features/clients/types/client';
 
 import type {
+  Portfolio,
   PortfolioRisk,
   PortfolioStatus,
 } from '../types/portfolio';
@@ -18,6 +19,7 @@ interface PortfolioFormData {
 
 interface PortfoliosModalProps {
   isOpen: boolean;
+  portfolio?: Portfolio | null;
   clients: Client[];
   onClose: () => void;
   onSave: (portfolio: PortfolioFormData) => void;
@@ -25,6 +27,7 @@ interface PortfoliosModalProps {
 
 export function PortfoliosModal({
   isOpen,
+  portfolio,
   clients,
   onClose,
   onSave,
@@ -35,6 +38,31 @@ export function PortfoliosModal({
   const [profitability, setProfitability] = useState(0);
   const [risk, setRisk] = useState<PortfolioRisk>('medium');
   const [status, setStatus] = useState<PortfolioStatus>('active');
+
+  const isEditing = Boolean(portfolio);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    if (portfolio) {
+      setName(portfolio.name);
+      setClientId(portfolio.clientId);
+      setBalance(portfolio.balance);
+      setProfitability(portfolio.profitability);
+      setRisk(portfolio.risk);
+      setStatus(portfolio.status);
+      return;
+    }
+
+    setName('');
+    setClientId('');
+    setBalance(0);
+    setProfitability(0);
+    setRisk('medium');
+    setStatus('active');
+  }, [isOpen, portfolio]);
 
   function handleSave() {
     if (!name.trim() || !clientId.trim()) {
@@ -60,10 +88,14 @@ export function PortfoliosModal({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 px-4 py-8">
       <div className="mx-auto w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
-        <h2 className="text-2xl font-bold">Nova Carteira</h2>
+        <h2 className="text-2xl font-bold">
+          {isEditing ? 'Editar Carteira' : 'Nova Carteira'}
+        </h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          Preencha as informações da carteira.
+          {isEditing
+            ? 'Atualize as informações da carteira.'
+            : 'Preencha as informações da carteira.'}
         </p>
 
         <div className="mt-6 space-y-4">
@@ -169,7 +201,7 @@ export function PortfoliosModal({
             onClick={handleSave}
             className="rounded-xl bg-primary px-5 py-2 text-primary-foreground"
           >
-            Salvar
+            {isEditing ? 'Salvar alterações' : 'Salvar'}
           </button>
         </div>
       </div>
