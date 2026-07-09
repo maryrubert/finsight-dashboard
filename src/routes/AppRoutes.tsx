@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { AppLayout } from '@/components/layout/AppLayout';
+import ClientsPage from '@/pages/Clients/ClientsPage';
 import DashboardPage from '@/pages/Dashboard/DashboardPage';
 import LoginPage from '@/pages/Login/LoginPage';
-import ClientsPage from '@/pages/Clients/ClientsPage';
+import PortfoliosPage from '@/pages/Portfolios/PortfoliosPage';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
           {
             path: '/clients',
             element: <ClientsPage />,
+          },
+          {
+            path: '/portfolios',
+            element: <PortfoliosPage />,
           },
         ],
       },

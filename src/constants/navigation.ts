@@ -19,7 +19,7 @@ export const navigationItems = [
   },
   {
     label: 'Carteiras',
-    path: '/portfolio',
+    path: '/portfolios',
     icon: BriefcaseBusiness,
   },
   {
