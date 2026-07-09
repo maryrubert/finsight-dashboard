@@ -1,9 +1,12 @@
 import { Pencil, Trash2 } from 'lucide-react';
 
+import type { Client } from '@/features/clients/types/client';
+
 import type { Portfolio } from '../types/portfolio';
 
 interface PortfoliosTableProps {
   portfolios: Portfolio[];
+  clients: Client[];
   onEditPortfolio: (portfolio: Portfolio) => void;
   onDeletePortfolio: (portfolio: Portfolio) => void;
 }
@@ -28,61 +31,43 @@ function formatRisk(risk: Portfolio['risk']) {
 
 export function PortfoliosTable({
   portfolios,
+  clients,
   onEditPortfolio,
   onDeletePortfolio,
 }: PortfoliosTableProps) {
+  function getClientName(clientId: string) {
+    return clients.find((client) => client.id === clientId)?.name ?? 'Cliente não encontrado';
+  }
+
   return (
     <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
       <table className="w-full border-collapse">
         <thead className="bg-slate-50">
           <tr className="border-b">
-            <th className="px-6 py-4 text-left text-sm font-semibold">
-              Carteira
-            </th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">
-              Cliente
-            </th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">
-              Saldo
-            </th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">
-              Rentabilidade
-            </th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">
-              Risco
-            </th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">
-              Status
-            </th>
-            <th className="px-6 py-4 text-right text-sm font-semibold">
-              Ações
-            </th>
+            <th className="px-6 py-4 text-left text-sm font-semibold">Carteira</th>
+            <th className="px-6 py-4 text-left text-sm font-semibold">Cliente</th>
+            <th className="px-6 py-4 text-left text-sm font-semibold">Saldo</th>
+            <th className="px-6 py-4 text-left text-sm font-semibold">Rentabilidade</th>
+            <th className="px-6 py-4 text-left text-sm font-semibold">Risco</th>
+            <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
+            <th className="px-6 py-4 text-right text-sm font-semibold">Ações</th>
           </tr>
         </thead>
 
         <tbody>
           {portfolios.map((portfolio) => (
-            <tr
-              key={portfolio.id}
-              className="border-b transition-colors hover:bg-slate-50"
-            >
+            <tr key={portfolio.id} className="border-b transition-colors hover:bg-slate-50">
               <td className="px-6 py-4 font-medium">{portfolio.name}</td>
 
               <td className="px-6 py-4 text-muted-foreground">
-                Cliente não vinculado
+                {getClientName(portfolio.clientId)}
               </td>
 
-              <td className="px-6 py-4">
-                {formatCurrency(portfolio.balance)}
-              </td>
+              <td className="px-6 py-4">{formatCurrency(portfolio.balance)}</td>
 
-              <td className="px-6 py-4">
-                {portfolio.profitability}%
-              </td>
+              <td className="px-6 py-4">{portfolio.profitability}%</td>
 
-              <td className="px-6 py-4">
-                {formatRisk(portfolio.risk)}
-              </td>
+              <td className="px-6 py-4">{formatRisk(portfolio.risk)}</td>
 
               <td className="px-6 py-4">
                 <span
