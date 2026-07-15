@@ -26,7 +26,9 @@ export async function getDashboardMetrics(): Promise<Metric[]> {
   const averageProfitability =
     portfolios.length === 0
       ? 0
-      : totalProfitability / portfolios.length;
+      : Number(
+          (totalProfitability / portfolios.length).toFixed(1),
+      );
 
   return [
     {

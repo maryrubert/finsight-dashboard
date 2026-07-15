@@ -1,6 +1,6 @@
 import {
-  Area,
-  AreaChart,
+  Bar,
+  BarChart,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -8,20 +8,11 @@ import {
   YAxis,
 } from 'recharts';
 
-const data = [
-  { month: 'Jan', value: 1850000 },
-  { month: 'Fev', value: 1920000 },
-  { month: 'Mar', value: 2050000 },
-  { month: 'Abr', value: 2140000 },
-  { month: 'Mai', value: 2210000 },
-  { month: 'Jun', value: 2320000 },
-  { month: 'Jul', value: 2280000 },
-  { month: 'Ago', value: 2410000 },
-  { month: 'Set', value: 2480000 },
-  { month: 'Out', value: 2520000 },
-  { month: 'Nov', value: 2490000 },
-  { month: 'Dez', value: 2540000 },
-];
+import type { Portfolio } from '@/features/portfolios/types/portfolio';
+
+interface EvolutionChartProps {
+  portfolios: Portfolio[];
+}
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('pt-BR', {
@@ -31,65 +22,95 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
-export function EvolutionChart() {
+function formatCompactCurrency(value: number) {
+  return new Intl.NumberFormat('pt-BR', {
+    notation: 'compact',
+    style: 'currency',
+    currency: 'BRL',
+    maximumFractionDigits: 1,
+  }).format(value);
+}
+
+export function EvolutionChart({
+  portfolios,
+}: EvolutionChartProps) {
+  const chartData = [...portfolios]
+  .sort((firstPortfolio, secondPortfolio) => {
+    return secondPortfolio.balance - firstPortfolio.balance;
+  })
+  .map((portfolio) => ({
+    name: portfolio.name,
+    balance: portfolio.balance,
+  }));
+
   return (
     <section className="rounded-xl border bg-card p-4 shadow-sm">
       <div className="mb-4">
-        <h2 className="text-lg font-semibold">Evolução Patrimonial</h2>
+        <h2 className="text-lg font-semibold">
+          Patrimônio por Carteira
+        </h2>
 
         <p className="text-sm text-muted-foreground">
-          Crescimento acumulado nos últimos 12 meses
+          Comparação do saldo atual das carteiras cadastradas
         </p>
       </div>
 
-      <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data}>
-            <defs>
-              <linearGradient
-                id="portfolioGradient"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop offset="5%" stopColor="#2563EB" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
-              </linearGradient>
-            </defs>
+      {chartData.length === 0 ? (
+        <div className="flex h-80 items-center justify-center rounded-xl border border-dashed">
+          <p className="text-sm text-muted-foreground">
+            Cadastre uma carteira para visualizar o gráfico.
+          </p>
+        </div>
+      ) : (
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{
+                top: 8,
+                right: 8,
+                left: 8,
+                bottom: 24,
+              }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+              />
 
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-            />
+              <XAxis
+                dataKey="name"
+                tickLine={false}
+                axisLine={false}
+                interval={0}
+                angle={-15}
+                textAnchor="end"
+                height={70}
+              />
 
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-            />
+              <YAxis
+                tickFormatter={formatCompactCurrency}
+                tickLine={false}
+                axisLine={false}
+                width={90}
+              />
 
-            <YAxis
-              tickFormatter={(value) => `${value / 1000000}M`}
-              tickLine={false}
-              axisLine={false}
-            />
+              <Tooltip
+                formatter={(value) => [
+                  formatCurrency(Number(value)),
+                  'Patrimônio',
+                ]}
+              />
 
-            <Tooltip
-              formatter={(value) => formatCurrency(Number(value))}
-              labelFormatter={(label) => `Mês: ${label}`}
-            />
-
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="#2563EB"
-              fill="url(#portfolioGradient)"
-              strokeWidth={3}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+              <Bar
+                dataKey="balance"
+                fill="#2563EB"
+                radius={[8, 8, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </section>
   );
 }
