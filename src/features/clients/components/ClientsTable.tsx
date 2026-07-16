@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, SearchX, Trash2 } from 'lucide-react';
 
 import type { Client } from '../types/client';
 
@@ -13,6 +13,27 @@ export function ClientsTable({
   onEditClient,
   onDeleteClient,
 }: ClientsTableProps) {
+  if (clients.length === 0) {
+    return (
+      <div className="rounded-2xl border bg-card p-12 shadow-sm">
+        <div className="flex flex-col items-center text-center">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <SearchX size={28} />
+          </div>
+
+          <h2 className="text-lg font-semibold text-foreground">
+            Nenhum cliente encontrado
+          </h2>
+
+          <p className="mt-2 max-w-md text-sm text-muted-foreground">
+            Não encontramos clientes com os filtros selecionados.
+            Tente alterar a pesquisa, o status ou a carteira.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
       <table className="w-full border-collapse">
