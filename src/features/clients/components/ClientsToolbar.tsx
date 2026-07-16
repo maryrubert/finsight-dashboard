@@ -5,21 +5,27 @@ import type { ClientStatus } from '../types/client';
 interface ClientsToolbarProps {
   search: string;
   status: ClientStatus | 'all';
+  portfolio: string;
+  portfolioOptions: string[];
   onSearchChange: (value: string) => void;
   onStatusChange: (value: ClientStatus | 'all') => void;
+  onPortfolioChange: (value: string) => void;
   onCreateClient: () => void;
 }
 
 export function ClientsToolbar({
   search,
   status,
+  portfolio,
+  portfolioOptions,
   onSearchChange,
   onStatusChange,
+  onPortfolioChange,
   onCreateClient,
 }: ClientsToolbarProps) {
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-      <div className="flex flex-1 flex-col gap-4 md:flex-row">
+      <div className="flex flex-1 flex-col gap-4 md:flex-row md:flex-wrap">
         <div className="relative w-full md:max-w-md">
           <Search
             size={18}
@@ -45,6 +51,23 @@ export function ClientsToolbar({
           <option value="all">Todos os status</option>
           <option value="active">Ativos</option>
           <option value="inactive">Inativos</option>
+        </select>
+
+        <select
+          value={portfolio}
+          onChange={(event) => onPortfolioChange(event.target.value)}
+          className="h-11 rounded-xl border bg-background px-4 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+        >
+          <option value="all">Todas as carteiras</option>
+
+          {portfolioOptions.map((portfolioOption) => (
+            <option
+              key={portfolioOption}
+              value={portfolioOption}
+            >
+              {portfolioOption}
+            </option>
+          ))}
         </select>
       </div>
 

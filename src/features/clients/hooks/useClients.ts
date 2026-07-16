@@ -21,6 +21,7 @@ export function useClients() {
   const [clients, setClients] = useState<Client[]>([]);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<ClientStatusFilter>('all');
+  const [portfolio, setPortfolio] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +37,18 @@ export function useClients() {
     loadClients();
   }, []);
 
+  const portfolioOptions = useMemo(() => {
+    const uniquePortfolios = new Set(
+      clients
+        .map((client) => client.portfolio.trim())
+        .filter(Boolean),
+    );
+
+    return Array.from(uniquePortfolios).sort((first, second) =>
+      first.localeCompare(second, 'pt-BR'),
+    );
+  }, [clients]);
+
   const filteredClients = useMemo(() => {
     const searchTerm = search.toLowerCase().trim();
 
@@ -49,9 +62,12 @@ export function useClients() {
       const matchesStatus =
         status === 'all' || client.status === status;
 
-      return matchesSearch && matchesStatus;
+      const matchesPortfolio =
+        portfolio === 'all' || client.portfolio === portfolio;
+
+      return matchesSearch && matchesStatus && matchesPortfolio;
     });
-  }, [clients, search, status]);
+  }, [clients, search, status, portfolio]);
 
   async function create(data: ClientFormData) {
     const newClient: Client = {
@@ -101,6 +117,9 @@ export function useClients() {
     setSearch,
     status,
     setStatus,
+    portfolio,
+    setPortfolio,
+    portfolioOptions,
     isLoading,
     create,
     update,

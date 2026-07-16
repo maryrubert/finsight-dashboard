@@ -17,6 +17,9 @@ export default function ClientsPage() {
     setSearch,
     status,
     setStatus,
+    portfolio,
+    setPortfolio,
+    portfolioOptions,
     isLoading,
     create,
     update,
@@ -93,8 +96,11 @@ export default function ClientsPage() {
         <ClientsToolbar
           search={search}
           status={status}
+          portfolio={portfolio}
+          portfolioOptions={portfolioOptions}
           onSearchChange={setSearch}
           onStatusChange={setStatus}
+          onPortfolioChange={setPortfolio}
           onCreateClient={handleOpenCreateModal}
         />
 
