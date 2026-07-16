@@ -21,9 +21,16 @@ export interface PortfolioFormData {
   status: PortfolioStatus;
 }
 
+export type PortfolioRiskFilter = PortfolioRisk | 'all';
+export type PortfolioStatusFilter = PortfolioStatus | 'all';
+
 export function usePortfolios() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [search, setSearch] = useState('');
+  const [clientId, setClientId] = useState('all');
+  const [risk, setRisk] = useState<PortfolioRiskFilter>('all');
+  const [status, setStatus] =
+    useState<PortfolioStatusFilter>('all');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -42,14 +49,28 @@ export function usePortfolios() {
   const filteredPortfolios = useMemo(() => {
     const searchTerm = search.toLowerCase().trim();
 
-    if (!searchTerm) {
-      return portfolios;
-    }
+    return portfolios.filter((portfolio) => {
+      const matchesSearch =
+        !searchTerm ||
+        portfolio.name.toLowerCase().includes(searchTerm);
 
-    return portfolios.filter((portfolio) =>
-      portfolio.name.toLowerCase().includes(searchTerm),
-    );
-  }, [portfolios, search]);
+      const matchesClient =
+        clientId === 'all' || portfolio.clientId === clientId;
+
+      const matchesRisk =
+        risk === 'all' || portfolio.risk === risk;
+
+      const matchesStatus =
+        status === 'all' || portfolio.status === status;
+
+      return (
+        matchesSearch &&
+        matchesClient &&
+        matchesRisk &&
+        matchesStatus
+      );
+    });
+  }, [portfolios, search, clientId, risk, status]);
 
   async function create(data: PortfolioFormData) {
     const newPortfolio: Portfolio = {
@@ -65,7 +86,10 @@ export function usePortfolios() {
     ]);
   }
 
-  async function update(id: string, data: PortfolioFormData) {
+  async function update(
+    id: string,
+    data: PortfolioFormData,
+  ) {
     const updatedPortfolio: Portfolio = {
       id,
       ...data,
@@ -84,7 +108,9 @@ export function usePortfolios() {
     await deletePortfolio(id);
 
     setPortfolios((previousPortfolios) =>
-      previousPortfolios.filter((portfolio) => portfolio.id !== id),
+      previousPortfolios.filter(
+        (portfolio) => portfolio.id !== id,
+      ),
     );
   }
 
@@ -92,6 +118,12 @@ export function usePortfolios() {
     portfolios: filteredPortfolios,
     search,
     setSearch,
+    clientId,
+    setClientId,
+    risk,
+    setRisk,
+    status,
+    setStatus,
     isLoading,
     create,
     update,
