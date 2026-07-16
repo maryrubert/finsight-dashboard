@@ -4,15 +4,19 @@ import { ConfirmationDialog } from '@/components/common/ConfirmationDialog';
 import { ClientModal } from '@/features/clients/components/ClientModal';
 import { ClientsTable } from '@/features/clients/components/ClientsTable';
 import { ClientsToolbar } from '@/features/clients/components/ClientsToolbar';
-
-import { useClients } from '@/features/clients/hooks/useClients';
-import type { ClientFormData } from '@/features/clients/hooks/useClients';
+import {
+  useClients,
+  type ClientFormData,
+} from '@/features/clients/hooks/useClients';
+import type { Client } from '@/features/clients/types/client';
 
 export default function ClientsPage() {
   const {
     clients,
     search,
     setSearch,
+    status,
+    setStatus,
     isLoading,
     create,
     update,
@@ -88,7 +92,9 @@ export default function ClientsPage() {
 
         <ClientsToolbar
           search={search}
+          status={status}
           onSearchChange={setSearch}
+          onStatusChange={setStatus}
           onCreateClient={handleOpenCreateModal}
         />
 

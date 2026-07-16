@@ -15,9 +15,12 @@ export interface ClientFormData {
   status: ClientStatus;
 }
 
+export type ClientStatusFilter = ClientStatus | 'all';
+
 export function useClients() {
   const [clients, setClients] = useState<Client[]>([]);
   const [search, setSearch] = useState('');
+  const [status, setStatus] = useState<ClientStatusFilter>('all');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -36,17 +39,19 @@ export function useClients() {
   const filteredClients = useMemo(() => {
     const searchTerm = search.toLowerCase().trim();
 
-    if (!searchTerm) {
-      return clients;
-    }
-
-    return clients.filter(
-      (client) =>
+    return clients.filter((client) => {
+      const matchesSearch =
+        !searchTerm ||
         client.name.toLowerCase().includes(searchTerm) ||
         client.email.toLowerCase().includes(searchTerm) ||
-        client.portfolio.toLowerCase().includes(searchTerm),
-    );
-  }, [clients, search]);
+        client.portfolio.toLowerCase().includes(searchTerm);
+
+      const matchesStatus =
+        status === 'all' || client.status === status;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [clients, search, status]);
 
   async function create(data: ClientFormData) {
     const newClient: Client = {
@@ -94,6 +99,8 @@ export function useClients() {
     clients: filteredClients,
     search,
     setSearch,
+    status,
+    setStatus,
     isLoading,
     create,
     update,
