@@ -12,11 +12,13 @@
   "author": "Mariana Rubert",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^7.8.0",
     "express": "^5.1.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.0",
+    "prisma": "^7.8.0",
     "tsx": "^4.20.0",
     "typescript": "^5.8.0"
   }
