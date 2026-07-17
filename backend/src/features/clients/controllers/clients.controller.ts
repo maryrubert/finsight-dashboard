@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import {
   createClient,
   getClients,
+  updateClient,
 } from "../services/clients.service";
 
 export async function listClients(
@@ -21,4 +22,15 @@ export async function createClientHandler(
   const client = await createClient(request.body);
 
   return response.status(201).json(client);
+}
+
+export async function updateClientHandler(
+  request: Request,
+  response: Response,
+) {
+  const { id } = request.params;
+
+  const client = await updateClient(id, request.body);
+
+  return response.status(200).json(client);
 }

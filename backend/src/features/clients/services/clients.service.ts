@@ -26,3 +26,17 @@ export async function createClient(
 
   return client;
 }
+
+export async function updateClient(
+  id: string,
+  clientData: CreateClientData,
+): Promise<Client> {
+  const client = await prisma.client.update({
+    where: {
+      id,
+    },
+    data: clientData,
+  });
+
+  return client;
+}
