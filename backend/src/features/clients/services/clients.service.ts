@@ -1,37 +1,28 @@
-import { randomUUID } from 'node:crypto';
+import type { Client } from "../../../../generated/prisma/client";
 
-import type { Client } from '../types/client';
+import { prisma } from "../../../lib/prisma";
 
-const clients: Client[] = [
-  {
-    id: randomUUID(),
-    name: 'Mariana Rubert',
-    email: 'mariana@finsight.com',
-    portfolio: 'Premium',
-    status: 'active',
-  },
-  {
-    id: randomUUID(),
-    name: 'João Silva',
-    email: 'joao@finsight.com',
-    portfolio: 'Conservadora',
-    status: 'inactive',
-  },
-];
+type CreateClientData = Omit<
+  Client,
+  "id" | "createdAt" | "updatedAt"
+>;
 
-export function getClients(): Client[] {
+export async function getClients(): Promise<Client[]> {
+  const clients = await prisma.client.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return clients;
 }
 
-export function createClient(
-  client: Omit<Client, 'id'>,
-): Client {
-  const newClient: Client = {
-    id: randomUUID(),
-    ...client,
-  };
+export async function createClient(
+  clientData: CreateClientData,
+): Promise<Client> {
+  const client = await prisma.client.create({
+    data: clientData,
+  });
 
-  clients.push(newClient);
-
-  return newClient;
+  return client;
 }
