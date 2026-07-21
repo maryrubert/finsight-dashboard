@@ -8,14 +8,33 @@ datasource db {
 }
 
 model Client {
-  id         String   @id @default(uuid())
-  name       String
-  email      String   @unique
-  portfolio  String
-  status     String
+  id        String @id @default(uuid())
+  name      String
+  email     String @unique
+  portfolio String
+  status    String
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  portfolios Portfolio[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("clients")
+}
+
+model Portfolio {
+  id            String @id @default(uuid())
+  name          String
+  balance       Float
+  profitability Float
+  risk          String
+  status        String
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("portfolios")
 }

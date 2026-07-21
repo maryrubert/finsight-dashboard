@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { clientsRoutes } from '../features/clients/routes/clients.routes';
+import { portfoliosRoutes } from '../features/portfolios/routes/portfolios.routes';
 
 export const routes = Router();
 
@@ -12,3 +13,4 @@ routes.get('/health', (_request, response) => {
 });
 
 routes.use('/clients', clientsRoutes);
+routes.use('/portfolios', portfoliosRoutes);
