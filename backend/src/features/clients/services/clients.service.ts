@@ -40,3 +40,11 @@ export async function updateClient(
 
   return client;
 }
+
+export async function deleteClient(id: string): Promise<void> {
+  await prisma.client.delete({
+    where: {
+      id,
+    },
+  });
+}

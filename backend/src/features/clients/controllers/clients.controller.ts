@@ -4,6 +4,7 @@ import {
   createClient,
   getClients,
   updateClient,
+  deleteClient,
 } from "../services/clients.service";
 
 export async function listClients(
@@ -33,4 +34,15 @@ export async function updateClientHandler(
   const client = await updateClient(id, request.body);
 
   return response.status(200).json(client);
+}
+
+export async function deleteClientHandler(
+  request: Request,
+  response: Response,
+) {
+  const { id } = request.params;
+
+  await deleteClient(id);
+
+  return response.status(204).send();
 }
