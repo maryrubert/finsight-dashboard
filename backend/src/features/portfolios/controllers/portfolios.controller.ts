@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import {
   createPortfolio,
-  listPortfolios,
+  getPortfolios,
   deletePortfolio,
   updatePortfolio,
 } from '../services/portfolios.service';
@@ -11,7 +11,7 @@ export async function index(
   _request: Request,
   response: Response,
 ) {
-  const portfolios = await listPortfolios();
+  const portfolios = await getPortfolios();
 
   return response.json(portfolios);
 }

@@ -1,42 +1,48 @@
-import { prisma } from '../../../lib/prisma';
+import type { Portfolio } from "../../../../generated/prisma/client";
 
-interface CreatePortfolioData {
-  name: string;
-  clientId: string;
-  balance: number;
-  profitability: number;
-  risk: string;
-  status: string;
-}
+import { prisma } from "../../../lib/prisma";
 
-export async function listPortfolios() {
-  return prisma.portfolio.findMany({
+type CreatePortfolioData = Omit<
+  Portfolio,
+  "id" | "createdAt" | "updatedAt"
+>;
+
+export async function getPortfolios(): Promise<Portfolio[]> {
+  const portfolios = await prisma.portfolio.findMany({
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
   });
+
+  return portfolios;
 }
 
-export async function createPortfolio(data: CreatePortfolioData) {
-  return prisma.portfolio.create({
-    data,
+export async function createPortfolio(
+  portfolioData: CreatePortfolioData,
+): Promise<Portfolio> {
+  const portfolio = await prisma.portfolio.create({
+    data: portfolioData,
   });
+
+  return portfolio;
 }
 
 export async function updatePortfolio(
   id: string,
-  data: CreatePortfolioData,
-) {
-  return prisma.portfolio.update({
+  portfolioData: CreatePortfolioData,
+): Promise<Portfolio> {
+  const portfolio = await prisma.portfolio.update({
     where: {
       id,
     },
-    data,
+    data: portfolioData,
   });
+
+  return portfolio;
 }
 
-export async function deletePortfolio(id: string) {
-  return prisma.portfolio.delete({
+export async function deletePortfolio(id: string): Promise<void> {
+  await prisma.portfolio.delete({
     where: {
       id,
     },

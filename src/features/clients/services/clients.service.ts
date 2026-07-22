@@ -1,71 +1,36 @@
-import { clientsMock } from '../mocks/clients.mock';
+import { api } from '@/services/api';
+
 import type { Client } from '../types/client';
 
-const STORAGE_KEY = 'finsight:clients';
-
-function initializeStorage() {
-  const storedClients = localStorage.getItem(STORAGE_KEY);
-
-  if (!storedClients) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(clientsMock));
-  }
-}
+type CreateClientData = Omit<Client, 'id'>;
 
 export async function getClients(): Promise<Client[]> {
-  initializeStorage();
+  const response = await api.get<Client[]>('/clients');
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const clients = JSON.parse(
-        localStorage.getItem(STORAGE_KEY) ?? '[]',
-      ) as Client[];
-
-      resolve(clients);
-    }, 300);
-  });
+  return response.data;
 }
 
-export async function createClient(client: Client): Promise<void> {
-  initializeStorage();
+export async function createClient(
+  client: CreateClientData,
+): Promise<Client> {
+  const response = await api.post<Client>('/clients', client);
 
-  const clients = JSON.parse(
-    localStorage.getItem(STORAGE_KEY) ?? '[]',
-  ) as Client[];
-
-  clients.unshift(client);
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
+  return response.data;
 }
 
-export async function updateClient(client: Client): Promise<void> {
-  initializeStorage();
-
-  const clients = JSON.parse(
-    localStorage.getItem(STORAGE_KEY) ?? '[]',
-  ) as Client[];
-
-  const updatedClients = clients.map((currentClient) =>
-    currentClient.id === client.id ? client : currentClient,
+export async function updateClient(
+  client: Client,
+): Promise<Client> {
+  const response = await api.put<Client>(
+    `/clients/${client.id}`,
+    client,
   );
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedClients));
+  return response.data;
 }
 
 export async function deleteClient(
   clientId: string,
 ): Promise<void> {
-  initializeStorage();
-
-  const clients = JSON.parse(
-    localStorage.getItem(STORAGE_KEY) ?? '[]',
-  ) as Client[];
-
-  const updatedClients = clients.filter(
-    (client) => client.id !== clientId,
-  );
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(updatedClients),
-  );
+  await api.delete(`/clients/${clientId}`);
 }

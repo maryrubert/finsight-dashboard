@@ -73,36 +73,29 @@ export function usePortfolios() {
   }, [portfolios, search, clientId, risk, status]);
 
   async function create(data: PortfolioFormData) {
-    const newPortfolio: Portfolio = {
-      id: crypto.randomUUID(),
-      ...data,
-    };
+  const createdPortfolio = await createPortfolio(data);
 
-    await createPortfolio(newPortfolio);
+  setPortfolios((previousPortfolios) => [
+    createdPortfolio,
+    ...previousPortfolios,
+  ]);
+}
 
-    setPortfolios((previousPortfolios) => [
-      newPortfolio,
-      ...previousPortfolios,
-    ]);
-  }
+async function update(
+  id: string,
+  data: PortfolioFormData,
+) {
+  const updatedPortfolio = await updatePortfolio({
+    id,
+    ...data,
+  });
 
-  async function update(
-    id: string,
-    data: PortfolioFormData,
-  ) {
-    const updatedPortfolio: Portfolio = {
-      id,
-      ...data,
-    };
-
-    await updatePortfolio(updatedPortfolio);
-
-    setPortfolios((previousPortfolios) =>
-      previousPortfolios.map((portfolio) =>
-        portfolio.id === id ? updatedPortfolio : portfolio,
-      ),
-    );
-  }
+  setPortfolios((previousPortfolios) =>
+    previousPortfolios.map((portfolio) =>
+      portfolio.id === id ? updatedPortfolio : portfolio,
+    ),
+  );
+}
 
   async function remove(id: string) {
     await deletePortfolio(id);

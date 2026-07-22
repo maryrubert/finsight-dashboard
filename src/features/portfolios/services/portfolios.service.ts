@@ -1,87 +1,38 @@
-import { portfoliosMock } from '../mocks/portfolios.mock';
+import { api } from '../../../services/api';
 import type { Portfolio } from '../types/portfolio';
 
-const STORAGE_KEY = 'finsight:portfolios';
-
-function initializeStorage() {
-  const storedPortfolios = localStorage.getItem(STORAGE_KEY);
-
-  if (!storedPortfolios) {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(portfoliosMock),
-    );
-  }
-}
+type CreatePortfolioData = Omit<Portfolio, 'id'>;
 
 export async function getPortfolios(): Promise<Portfolio[]> {
-  initializeStorage();
+  const response = await api.get<Portfolio[]>('/portfolios');
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const portfolios = JSON.parse(
-        localStorage.getItem(STORAGE_KEY) ?? '[]',
-      ) as Portfolio[];
-
-      resolve(portfolios);
-    }, 300);
-  });
+  return response.data;
 }
 
 export async function createPortfolio(
-  portfolio: Portfolio,
-): Promise<void> {
-  initializeStorage();
-
-  const portfolios = JSON.parse(
-    localStorage.getItem(STORAGE_KEY) ?? '[]',
-  ) as Portfolio[];
-
-  portfolios.unshift(portfolio);
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(portfolios),
+  portfolio: CreatePortfolioData,
+): Promise<Portfolio> {
+  const response = await api.post<Portfolio>(
+    '/portfolios',
+    portfolio,
   );
+
+  return response.data;
 }
 
 export async function updatePortfolio(
   portfolio: Portfolio,
-): Promise<void> {
-  initializeStorage();
-
-  const portfolios = JSON.parse(
-    localStorage.getItem(STORAGE_KEY) ?? '[]',
-  ) as Portfolio[];
-
-  const updatedPortfolios = portfolios.map(
-    (currentPortfolio) =>
-      currentPortfolio.id === portfolio.id
-        ? portfolio
-        : currentPortfolio,
+): Promise<Portfolio> {
+  const response = await api.put<Portfolio>(
+    `/portfolios/${portfolio.id}`,
+    portfolio,
   );
 
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(updatedPortfolios),
-  );
+  return response.data;
 }
 
 export async function deletePortfolio(
   portfolioId: string,
 ): Promise<void> {
-  initializeStorage();
-
-  const portfolios = JSON.parse(
-    localStorage.getItem(STORAGE_KEY) ?? '[]',
-  ) as Portfolio[];
-
-  const updatedPortfolios = portfolios.filter(
-    (portfolio) => portfolio.id !== portfolioId,
-  );
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(updatedPortfolios),
-  );
+  await api.delete(`/portfolios/${portfolioId}`);
 }

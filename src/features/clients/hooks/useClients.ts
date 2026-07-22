@@ -70,38 +70,42 @@ export function useClients() {
   }, [clients, search, status, portfolio]);
 
   async function create(data: ClientFormData) {
-    const newClient: Client = {
-      id: crypto.randomUUID(),
-      ...data,
-    };
-
-    await createClient(newClient);
+  try {
+    const createdClient = await createClient(data);
 
     setClients((previousClients) => [
-      newClient,
+      createdClient,
       ...previousClients,
     ]);
+  } catch (error) {
+    console.error('Erro ao cadastrar cliente:', error);
+    throw error;
   }
+}
 
   async function update(
-    id: string,
-    data: ClientFormData,
-  ) {
-    const updatedClient: Client = {
+  id: string,
+  data: ClientFormData,
+) {
+  try {
+    const updatedClient = await updateClient({
       id,
       ...data,
-    };
-
-    await updateClient(updatedClient);
+    });
 
     setClients((previousClients) =>
       previousClients.map((client) =>
         client.id === id ? updatedClient : client,
       ),
     );
+  } catch (error) {
+    console.error('Erro ao atualizar cliente:', error);
+    throw error;
   }
+}  
 
   async function remove(id: string) {
+  try {
     await deleteClient(id);
 
     setClients((previousClients) =>
@@ -109,7 +113,11 @@ export function useClients() {
         (client) => client.id !== id,
       ),
     );
+  } catch (error) {
+    console.error('Erro ao excluir cliente:', error);
+    throw error;
   }
+}
 
   return {
     clients: filteredClients,
