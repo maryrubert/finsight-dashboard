@@ -1,4 +1,8 @@
-import type { Metric, MetricTrend, MetricType } from '@/types/metric';
+import type { 
+  Metric, 
+  MetricTrend, 
+  MetricType 
+} from '@/types/metric';
 
 interface MetricCardProps {
   metric: Metric;
@@ -10,7 +14,10 @@ const trendStyles: Record<MetricTrend, string> = {
   neutral: 'text-slate-600 bg-slate-100',
 };
 
-function formatMetricValue(value: number, type: MetricType) {
+function formatMetricValue(
+  value: number, 
+  type: MetricType
+) {
   if (type === 'currency') {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -20,14 +27,21 @@ function formatMetricValue(value: number, type: MetricType) {
   }
 
   if (type === 'percentage') {
-    return `${value}%`;
+    return `${value.toLocaleString('pt-BR')}%`;
   }
 
   return new Intl.NumberFormat('pt-BR').format(value);
 }
 
-export function MetricCard({ metric }: MetricCardProps) {
+export function MetricCard({ 
+  metric 
+}: MetricCardProps) {
   const Icon = metric.icon;
+
+  const hasVariation =
+    metric.variation !== undefined &&
+    metric.trend !== undefined;
+
 
   return (
     <article className="rounded-xl border bg-card p-4 shadow-sm">
@@ -36,18 +50,28 @@ export function MetricCard({ metric }: MetricCardProps) {
           <Icon size={20} />
         </div>
 
+      {hasVariation && (
         <span
-          className={`rounded-full px-2 py-1 text-xs font-medium ${trendStyles[metric.trend]}`}
+          className={`rounded-full px-2 py-1 text-xs font-medium ${
+            trendStyles[metric.trend!]
+          }`}
         >
-          {metric.variation > 0 ? '+' : ''}
+          {metric.variation! > 0 ? '+' : ''}
           {metric.variation}%
         </span>
+      )}
       </div>
-
+      
       <div>
-        <p className="text-sm text-muted-foreground">{metric.title}</p>
-        <strong className="mt-1 block text-2xl font-bold text-foreground">
-          {formatMetricValue(metric.value, metric.type)}
+        <p className='text-sm text-muted-foreground'>
+          {metric.title}
+        </p>
+
+        <strong className='mt-1 block text-2x1 font-bold text-foreground'>
+            {formatMetricValue(
+              metric.value,
+              metric.type,
+            )}
         </strong>
       </div>
     </article>

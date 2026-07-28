@@ -5,6 +5,7 @@ import ClientsPage from '@/pages/Clients/ClientsPage';
 import DashboardPage from '@/pages/Dashboard/DashboardPage';
 import LoginPage from '@/pages/Login/LoginPage';
 import PortfoliosPage from '@/pages/Portfolios/PortfoliosPage';
+import ReportsPage from '@/pages/Reports/ReportsPage';
 import { ProtectedRoute } from '@/routes/ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
           {
             path: '/portfolios',
             element: <PortfoliosPage />,
+          },
+          {
+            path: '/reports',
+            element: <ReportsPage />,
           },
         ],
       },
