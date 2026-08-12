@@ -72,6 +72,12 @@ export function MetricCard({
             metric.type,
           )}
         </strong>
+
+        {metric.description && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            {metric.description}
+          </p>
+        )}
       </div>
     </article>
   );

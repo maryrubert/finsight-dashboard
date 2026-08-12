@@ -44,24 +44,34 @@ export async function getDashboardMetrics(): Promise<Metric[]> {
       value: totalBalance,
       type: 'currency',
       icon: DollarSign,
+      description: `Distribuído em ${portfolios.length} carteira${
+        portfolios.length === 1 ? '' : 's'
+      }`,
     },
     {
       title: 'Carteiras ativas',
       value: activePortfolios.length,
       type: 'number',
       icon: BriefcaseBusiness,
+      description: `${activePortfolios.length} de ${portfolios.length} carteira${
+        portfolios.length === 1 ? '' : 's'
+      }`,
     },
     {
       title: 'Clientes',
       value: clients.length,
       type: 'number',
       icon: Users,
+      description: `${clients.length} cliente${
+        clients.length === 1 ? '' : 's'
+      } cadastrado${clients.length === 1 ? '' : 's'}`,
     },
     {
       title: 'Rentabilidade média',
       value: averageProfitability,
       type: 'percentage',
       icon: TrendingUp,
+      description: 'Média das carteiras cadastradas',
     },
   ];
 }
