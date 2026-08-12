@@ -9,23 +9,19 @@ import { getClients } from '@/features/clients/services/clients.service';
 import { getPortfolios } from '@/features/portfolios/services/portfolios.service';
 import type { Metric } from '@/types/metric';
 
-export async function getDashboardMetrics(): Promise<
-  Metric[]
-> {
+export async function getDashboardMetrics(): Promise<Metric[]> {
   const [clients, portfolios] = await Promise.all([
     getClients(),
     getPortfolios(),
   ]);
 
   const totalBalance = portfolios.reduce(
-    (total, portfolio) =>
-      total + portfolio.balance,
+    (total, portfolio) => total + portfolio.balance,
     0,
   );
 
   const totalProfitability = portfolios.reduce(
-    (total, portfolio) =>
-      total + portfolio.profitability,
+    (total, portfolio) => total + portfolio.profitability,
     0,
   );
 
@@ -34,10 +30,13 @@ export async function getDashboardMetrics(): Promise<
       ? 0
       : Number(
           (
-            totalProfitability /
-            portfolios.length
+            totalProfitability / portfolios.length
           ).toFixed(2),
         );
+
+  const activePortfolios = portfolios.filter(
+    (portfolio) => portfolio.status === 'active',
+  );
 
   return [
     {
@@ -47,8 +46,8 @@ export async function getDashboardMetrics(): Promise<
       icon: DollarSign,
     },
     {
-      title: 'Carteiras',
-      value: portfolios.length,
+      title: 'Carteiras ativas',
+      value: activePortfolios.length,
       type: 'number',
       icon: BriefcaseBusiness,
     },
