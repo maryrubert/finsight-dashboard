@@ -1,16 +1,16 @@
-import type { Request, Response } from "express";
+import type { Request, Response } from 'express';
 
 import {
   createReport,
   deleteReport,
   getReports,
   updateReportStatus,
-} from "../services/reports.service";
+} from '../services/reports.service';
 
 import type {
   CreateReportData,
   ReportStatus,
-} from "../types/reports";
+} from '../types/reports';
 
 export async function listReportsController(
   _request: Request,
@@ -21,10 +21,10 @@ export async function listReportsController(
 
     return response.status(200).json(reports);
   } catch (error) {
-    console.error("Erro ao listar relatórios:", error);
+    console.error('Erro ao listar relatórios:', error);
 
     return response.status(500).json({
-      message: "Não foi possível listar os relatórios.",
+      message: 'Não foi possível listar os relatórios.',
     });
   }
 }
@@ -56,7 +56,7 @@ export async function createReportController(
       !endDate
     ) {
       return response.status(400).json({
-        message: "Preencha todos os campos obrigatórios.",
+        message: 'Preencha todos os campos obrigatórios.',
       });
     }
 
@@ -68,41 +68,41 @@ export async function createReportController(
       Number.isNaN(parsedEndDate.getTime())
     ) {
       return response.status(400).json({
-        message: "Informe datas válidas.",
+        message: 'Informe datas válidas.',
       });
     }
 
     if (parsedStartDate > parsedEndDate) {
       return response.status(400).json({
         message:
-          "A data inicial não pode ser posterior à data final.",
+          'A data inicial não pode ser posterior à data final.',
       });
     }
 
     const allowedTypes = [
-      "portfolio-performance",
-      "client-summary",
-      "risk-analysis",
+      'portfolio-performance',
+      'client-summary',
+      'risk-analysis',
     ];
 
-    const allowedFormats = ["pdf", "csv"];
+    const allowedFormats = ['pdf', 'csv'];
 
     if (!allowedTypes.includes(type)) {
       return response.status(400).json({
-        message: "Tipo de relatório inválido.",
+        message: 'Tipo de relatório inválido.',
       });
     }
 
     if (!allowedFormats.includes(format)) {
       return response.status(400).json({
-        message: "Formato de relatório inválido.",
+        message: 'Formato de relatório inválido.',
       });
     }
 
     const data: CreateReportData = {
       name: name.trim(),
-      type: type as CreateReportData["type"],
-      format: format as CreateReportData["format"],
+      type: type as CreateReportData['type'],
+      format: format as CreateReportData['format'],
       startDate: parsedStartDate,
       endDate: parsedEndDate,
     };
@@ -111,10 +111,10 @@ export async function createReportController(
 
     return response.status(201).json(report);
   } catch (error) {
-    console.error("Erro ao criar relatório:", error);
+    console.error('Erro ao criar relatório:', error);
 
     return response.status(500).json({
-      message: "Não foi possível criar o relatório.",
+      message: 'Não foi possível criar o relatório.',
     });
   }
 }
@@ -124,20 +124,21 @@ export async function updateReportStatusController(
   response: Response,
 ) {
   try {
-    const { id } = request.params;
+    const id = String(request.params.id);
+
     const { status } = request.body as {
       status?: ReportStatus;
     };
 
     const allowedStatuses: ReportStatus[] = [
-      "processing",
-      "completed",
-      "failed",
+      'processing',
+      'completed',
+      'failed',
     ];
 
     if (!status || !allowedStatuses.includes(status)) {
       return response.status(400).json({
-        message: "Status de relatório inválido.",
+        message: 'Status de relatório inválido.',
       });
     }
 
@@ -149,13 +150,13 @@ export async function updateReportStatusController(
     return response.status(200).json(report);
   } catch (error) {
     console.error(
-      "Erro ao atualizar status do relatório:",
+      'Erro ao atualizar status do relatório:',
       error,
     );
 
     return response.status(500).json({
       message:
-        "Não foi possível atualizar o status do relatório.",
+        'Não foi possível atualizar o status do relatório.',
     });
   }
 }
@@ -165,16 +166,16 @@ export async function deleteReportController(
   response: Response,
 ) {
   try {
-    const { id } = request.params;
+    const id = String(request.params.id);
 
     await deleteReport(id);
 
     return response.status(204).send();
   } catch (error) {
-    console.error("Erro ao excluir relatório:", error);
+    console.error('Erro ao excluir relatório:', error);
 
     return response.status(500).json({
-      message: "Não foi possível excluir o relatório.",
+      message: 'Não foi possível excluir o relatório.',
     });
   }
 }

@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
 import {
   createPortfolio,
-  getPortfolios,
   deletePortfolio,
+  getPortfolios,
   updatePortfolio,
 } from '../services/portfolios.service';
 
@@ -20,7 +20,9 @@ export async function create(
   request: Request,
   response: Response,
 ) {
-  const portfolio = await createPortfolio(request.body);
+  const portfolio = await createPortfolio(
+    request.body,
+  );
 
   return response.status(201).json(portfolio);
 }
@@ -29,8 +31,10 @@ export async function update(
   request: Request,
   response: Response,
 ) {
+  const id = String(request.params.id);
+
   const portfolio = await updatePortfolio(
-    request.params.id,
+    id,
     request.body,
   );
 
@@ -41,7 +45,9 @@ export async function remove(
   request: Request,
   response: Response,
 ) {
-  await deletePortfolio(request.params.id);
+  const id = String(request.params.id);
+
+  await deletePortfolio(id);
 
   return response.status(204).send();
 }

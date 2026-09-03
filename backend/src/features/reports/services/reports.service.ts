@@ -1,12 +1,13 @@
-import type { Report } from "../../../../generated/prisma/client";
-import { prisma } from "../../../lib/prisma";
+import type { Report } from '../../../generated/prisma/client';
 
-import type { CreateReportData } from "../types/reports";
+import { prisma } from '../../../lib/prisma';
+
+import type { CreateReportData } from '../types/reports';
 
 export async function getReports() {
   return prisma.report.findMany({
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
 }
@@ -17,14 +18,14 @@ export async function createReport(
   return prisma.report.create({
     data: {
       ...data,
-      status: "processing",
+      status: 'processing',
     },
   });
 }
 
 export async function updateReportStatus(
   id: string,
-  status: Report["status"],
+  status: Report['status'],
 ): Promise<Report> {
   return prisma.report.update({
     where: {

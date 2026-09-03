@@ -1,11 +1,11 @@
-import type { Request, Response } from "express";
+import type { Request, Response } from 'express';
 
 import {
   createClient,
+  deleteClient,
   getClients,
   updateClient,
-  deleteClient,
-} from "../services/clients.service";
+} from '../services/clients.service';
 
 export async function listClients(
   _request: Request,
@@ -29,9 +29,12 @@ export async function updateClientHandler(
   request: Request,
   response: Response,
 ) {
-  const { id } = request.params;
+  const id = String(request.params.id);
 
-  const client = await updateClient(id, request.body);
+  const client = await updateClient(
+    id,
+    request.body,
+  );
 
   return response.status(200).json(client);
 }
@@ -40,7 +43,7 @@ export async function deleteClientHandler(
   request: Request,
   response: Response,
 ) {
-  const { id } = request.params;
+  const id = String(request.params.id);
 
   await deleteClient(id);
 

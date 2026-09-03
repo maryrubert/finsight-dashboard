@@ -1,16 +1,16 @@
-import type { Portfolio } from "../../../../generated/prisma/client";
+import type { Portfolio } from '../../../generated/prisma/client';
 
-import { prisma } from "../../../lib/prisma";
+import { prisma } from '../../../lib/prisma';
 
 type CreatePortfolioData = Omit<
   Portfolio,
-  "id" | "createdAt" | "updatedAt"
+  'id' | 'createdAt' | 'updatedAt'
 >;
 
 export async function getPortfolios(): Promise<Portfolio[]> {
   const portfolios = await prisma.portfolio.findMany({
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
 
@@ -41,7 +41,9 @@ export async function updatePortfolio(
   return portfolio;
 }
 
-export async function deletePortfolio(id: string): Promise<void> {
+export async function deletePortfolio(
+  id: string,
+): Promise<void> {
   await prisma.portfolio.delete({
     where: {
       id,

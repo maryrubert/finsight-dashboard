@@ -1,16 +1,16 @@
-import type { Client } from "../../../../generated/prisma/client";
+import type { Client } from '../../../generated/prisma/client';
 
-import { prisma } from "../../../lib/prisma";
+import { prisma } from '../../../lib/prisma';
 
 type CreateClientData = Omit<
   Client,
-  "id" | "createdAt" | "updatedAt"
+  'id' | 'createdAt' | 'updatedAt'
 >;
 
 export async function getClients(): Promise<Client[]> {
   const clients = await prisma.client.findMany({
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
 
@@ -41,7 +41,9 @@ export async function updateClient(
   return client;
 }
 
-export async function deleteClient(id: string): Promise<void> {
+export async function deleteClient(
+  id: string,
+): Promise<void> {
   await prisma.client.delete({
     where: {
       id,
